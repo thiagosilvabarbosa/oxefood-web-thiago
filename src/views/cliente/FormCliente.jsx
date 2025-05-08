@@ -13,7 +13,6 @@ export default function FormCliente () {
     const [foneFixo, setFoneFixo] = useState();
     
     function salvar() {
-        alert('teste')
 		let clienteRequest = {
 		     nome: nome,
 		     cpf: cpf,
@@ -41,7 +40,7 @@ export default function FormCliente () {
 
                 <Container textAlign='justified' >
 
-                    <h2> <span style={{color: 'darkgray'}}> Cliente2 &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro </h2>
+                    <h2> <span style={{color: 'darkgray'}}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro </h2>
 
                     <Divider />
 
