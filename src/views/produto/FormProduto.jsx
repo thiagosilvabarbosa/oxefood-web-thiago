@@ -1,11 +1,11 @@
 import axios from 'axios';
 import InputMask from 'comigo-tech-react-input-mask';
-import React, { useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
 
 export default function FormProduto () {
-
     const [titulo, setTitulo] = useState();
     const [codigo, setCodigo] = useState();
     const [descricao, setDescricao] = useState();
@@ -23,8 +23,8 @@ export default function FormProduto () {
             tempoEntregaMaximo: tempoEntregaMaximo,
       
         }
-        
-    axios.post("https://localhost8080/api/produto", produtoRequest)
+    console.log(produtoRequest)
+    axios.post("http://localhost:8080/api/produto", produtoRequest)
     .then((response)=>{
         console.log("produto cadastrado com sucesso")
     })
@@ -105,7 +105,6 @@ export default function FormProduto () {
                                     label='Valor Unitario'
                                     width={10}>
                                         <InputMask 
-                                        mask="R$ 99.99" 
                                         maskChar={null}
                                         value={valorUnitario}
                                         onChange={(e)=>setValorUnitario(e.target.value)}
@@ -139,6 +138,7 @@ export default function FormProduto () {
                         
                         <div style={{marginTop: '4%'}}>
 
+                            <Link to={'/list-produto'}>
                             <Button
                                 type="button"
                                 inverted
@@ -150,7 +150,8 @@ export default function FormProduto () {
                                 <Icon name='reply' />
                                 Listar
                             </Button>
-                                
+                            </Link>   
+
                             <Button
                                 inverted
                                 circular
