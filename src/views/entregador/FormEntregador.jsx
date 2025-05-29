@@ -1,10 +1,19 @@
 import axios from 'axios';
 import InputMask from 'comigo-tech-react-input-mask';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
 
 export default function FormEntregador () {
+
+const { state } = useLocation();
+
+const [idEntregador, setIdEntregador] = useState();
+
+
+
+
     const [nome, setNome] = useState();
     const [cpf, setCpf] = useState();
     const [rg, setRg] = useState();
@@ -50,6 +59,37 @@ export default function FormEntregador () {
     ];
 
 
+    useEffect(() => {
+  if (state != null && state.id != null) {
+    axios
+      .get("http://localhost:8080/api/entregador/" + state.id)
+      .then((response) => {
+        setIdEntregador(response.data.id);
+        setNome(response.data.nome);
+        setCpf(response.data.cpf);
+        setRg(response.data.rg);
+        setDataNascimento(response.data.dataNascimento);
+        setFoneCelular(response.data.foneCelular);
+        setFoneFixo(response.data.foneFixo);
+        setQtdEntregasRealizadas(response.data.qtdEntregasRealizadas);
+        setValorFrete(response.data.valorFrete);
+        setEnderecoRua(response.data.enderecoRua);
+        setEnderecoComplemento(response.data.enderecoComplemento);
+        setEnderecoNumero(response.data.enderecoNumero);
+        setEnderecoBairro(response.data.enderecoBairro);
+        setEnderecoCidade(response.data.enderecoCidade);
+        setEnderecoCep(response.data.enderecoCep);
+        setEnderecoUf(response.data.enderecoUf);
+        setAtivo(response.data.ativo ? 'sim' : 'nao');
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar Entregador:", error);
+      });
+  }
+}, [state]);
+
+
+
     function salvar(){
         let entregadorRequest = {
           nome: nome,
@@ -70,13 +110,16 @@ export default function FormEntregador () {
           ativo: ativo,
         };
         
-        axios.post("http://localhost:8080/api/entregador", entregadorRequest)
-        .then((response)=>{
-            console.log("Entregador Cadastrado com Sucesso")
-        })
-        .catch((error)=>{
-            console.log("Erro ao cadastrar Entregador")
-        })
+       if (idEntregador != null) { //Alteração:
+           axios.put("http://localhost:8080/api/entregador/" + idEntregador, entregadorRequest)
+           .then((response) => { console.log('entregador alterado com sucesso.') })
+           .catch((error) => { console.log('Erro ao alter um entregador.') })
+       } else { //Cadastro:
+           axios.post("http://localhost:8080/api/entregador", entregadorRequest)
+           .then((response) => { console.log('entregador cadastrado com sucesso.') })
+           .catch((error) => { console.log('Erro ao incluir o entregador.') })
+       }
+
     }
 
     return (
@@ -85,15 +128,33 @@ export default function FormEntregador () {
 
         <div style={{ marginTop: "3%" }}>
           <Container textAlign="justified">
-            <h2>
-              {" "}
-              <span style={{ color: "darkgray" }}>
+
+
+
+            {idEntregador === undefined && (
+              <h2>
                 {" "}
-                Entregador &nbsp;
-                <Icon name="angle double right" size="small" />{" "}
-              </span>{" "}
-              Cadastro{" "}
-            </h2>
+                <span style={{ color: "darkgray" }}>
+                  {" "}
+                  Entregador &nbsp;
+                  <Icon name="angle double right" size="small" />{" "}
+                </span>{" "}
+                Cadastro
+              </h2>
+            )}
+            {idEntregador != undefined && (
+              <h2>
+                {" "}
+                <span style={{ color: "darkgray" }}>
+                  {" "}
+                  Entregador &nbsp;
+                  <Icon name="angle double right" size="small" />{" "}
+                </span>{" "}
+                Alteração
+              </h2>
+            )}
+
+
 
             <Divider />
 
