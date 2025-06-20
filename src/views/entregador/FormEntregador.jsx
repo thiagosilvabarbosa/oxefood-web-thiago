@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
 import MenuSistema from '../../MenuSistema';
+import { notifyError, notifySuccess } from '../../views/util/Util';
 
 export default function FormEntregador () {
 
@@ -112,12 +113,32 @@ const [idEntregador, setIdEntregador] = useState();
         
        if (idEntregador != null) { //Alteração:
            axios.put("http://localhost:8080/api/entregador/" + idEntregador, entregadorRequest)
-           .then((response) => { console.log('entregador alterado com sucesso.') })
-           .catch((error) => { console.log('Erro ao alter um entregador.') })
+           .then((response) => {
+             notifySuccess('entregador alterado com sucesso.') })
+           .catch((error) => {
+              if (error.response.data.errors != undefined) {
+       		      for (let i = 0; i < error.response.data.errors.length; i++) {
+	       		      notifyError(error.response.data.errors[i].defaultMessage)
+	    	        }
+	            } else {
+		            notifyError(error.response.data.message)
+	            }
+ 
+            })
+
        } else { //Cadastro:
-           axios.post("http://localhost:8080/api/entregador", entregadorRequest)
-           .then((response) => { console.log('entregador cadastrado com sucesso.') })
-           .catch((error) => { console.log('Erro ao incluir o entregador.') })
+          axios.post("http://localhost:8080/api/entregador", entregadorRequest)
+          .then((response) => { 
+              notifySuccess('entregador cadastrado com sucesso.') })
+          .catch((error) => { 
+            if (error.response.data.errors != undefined) {
+       		      for (let i = 0; i < error.response.data.errors.length; i++) {
+	       		      notifyError(error.response.data.errors[i].defaultMessage)
+	    	        }
+	            } else {
+		            notifyError(error.response.data.message)
+	          } 
+          })
        }
 
     }
